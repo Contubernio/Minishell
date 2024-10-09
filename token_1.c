@@ -6,7 +6,7 @@
 /*   By: albealva <albealva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 18:10:59 by albealva          #+#    #+#             */
-/*   Updated: 2024/10/05 18:15:06 by albealva         ###   ########.fr       */
+/*   Updated: 2024/10/09 18:24:44 by albealva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+typedef enum {
+    NONE,
+    SINGLE_QUOTE,
+    DOUBLE_QUOTE
+} QuoteState;
+
 
 const char	*get_token_type_name(int type)
 {
@@ -365,6 +372,7 @@ char *handle_dollar_expansion(const char *input, int *i, int *temp_index, char *
             free(exit_status_str);
         }
         (*i) += 1;
+	//free(exit_status_str); borrame
         return (NULL);
     }
 	else
@@ -372,6 +380,7 @@ char *handle_dollar_expansion(const char *input, int *i, int *temp_index, char *
         (*i)++;
 		extract_var_name(input, i, var_name, &var_index);
         (*i)--;
+	//free(exit_status_str); a mi tambien 
         return (get_env_var(info, var_name));
     }
 }
@@ -532,6 +541,7 @@ int calculate_length_difference(const char *input, int start_pos,t_general *info
 			}
 			expanded = 1;  // Marca que ya hemos expandido una variable
 			i++;  // Avanza para saltarse el '?'
+			//free(exit_status_str);
 		}
 		if (input[i] == '$' && !expanded) {
 			i++;  // Avanza para saltarse el '$'
@@ -863,8 +873,6 @@ if (current_token) {
 	
 	// Añadir el último token a la lista
 	add_token_to_list(info, current_token, is_first_token ? CMD : (expect_file ? FIL : ARG));
-
-	// Liberar la memoria de current_token
 	free(current_token);
 	current_token = NULL;
 
@@ -877,7 +885,7 @@ if (current_token) {
 }
 
 // Aquí puedes liberar start_pos si fue utilizado
-if (count_dollars(section))
+if (start_pos != NULL)
 	free(start_pos);
 if (current_token != NULL)
 {
