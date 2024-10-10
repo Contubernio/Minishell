@@ -6,7 +6,7 @@
 /*   By: albealva <albealva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/08 18:10:59 by albealva          #+#    #+#             */
-/*   Updated: 2024/10/09 18:24:44 by albealva         ###   ########.fr       */
+/*   Updated: 2024/10/10 21:46:01 by albealva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+/*
 typedef enum {
     NONE,
     SINGLE_QUOTE,
     DOUBLE_QUOTE
 } QuoteState;
-
+*/
 
 const char	*get_token_type_name(int type)
 {
@@ -612,7 +612,7 @@ void extract_tokens(const char *section, t_general *info) {
 
 	
 	while (section[i] != '\0') {
-
+/*
 		 // Manejo del salto de línea ('\n')
 	if (section[i] == '\n' && !in_single_quotes && !in_double_quotes) {
 		if (current_token) {
@@ -632,7 +632,8 @@ void extract_tokens(const char *section, t_general *info) {
 		}
 		z = 0;
 	}
-			add_token_to_list(info, current_token, is_first_token ? CMD : (expect_file ? FIL : ARG));
+			//add_token_to_list(info, current_token, is_first_token ? CMD : (expect_file ? FIL : ARG));
+			add_token_to_list(info, current_token, expect_file ? FIL : (is_first_token ? CMD : ARG));
 			free(current_token);
 			current_token = NULL;
 			j = reset_positions(start_pos, size_malloc);
@@ -644,7 +645,7 @@ void extract_tokens(const char *section, t_general *info) {
 		i++;
 		continue;  // Saltar el salto de línea para continuar
 	}
-		
+	*/	
 		// Manejo de comillas dobles
 		if (section[i] == '\"') {
 			if (!in_single_quotes) {        
@@ -702,7 +703,7 @@ void extract_tokens(const char *section, t_general *info) {
 			current_token = NULL;
 			i++;
 			expect_file = 1;
-			is_first_token = 0;
+			//is_first_token = 0;
 			j=reset_positions(start_pos, size_malloc);
 			j = 0;
 			quote_state = NONE;
@@ -721,7 +722,7 @@ void extract_tokens(const char *section, t_general *info) {
 			free(current_token);
 			current_token = NULL;
 			expect_file = 1;
-			is_first_token = 0;
+			//is_first_token = 0;
 			j=reset_positions(start_pos, size_malloc);
 			j = 0;
 			quote_state = NONE;
@@ -756,7 +757,7 @@ void extract_tokens(const char *section, t_general *info) {
 			free(current_token);
 			current_token = NULL;
 			expect_file = 1;
-			is_first_token = 0;
+			//is_first_token = 0;
 			j=reset_positions(start_pos, size_malloc);
 			j = 0;
 			quote_state = NONE;
@@ -821,13 +822,17 @@ void extract_tokens(const char *section, t_general *info) {
 		}
 		z = 0;
 	}
-				add_token_to_list(info, current_token, is_first_token ? CMD : (expect_file ? FIL : ARG));
+				//add_token_to_list(info, current_token, is_first_token ? CMD : (expect_file ? FIL : ARG));
+				add_token_to_list(info, current_token, expect_file ? FIL : (is_first_token ? CMD : ARG));
 				free(current_token);
 				current_token = NULL;
 				j=reset_positions(start_pos, size_malloc);
 				j = 0;
 				quote_state=NONE;
-				is_first_token = 0;
+				if (expect_file == 0) {
+					is_first_token = 0;
+				}
+				
 				expect_file = 0;
 			}
 			
@@ -872,7 +877,8 @@ if (current_token) {
 	}
 	
 	// Añadir el último token a la lista
-	add_token_to_list(info, current_token, is_first_token ? CMD : (expect_file ? FIL : ARG));
+	//add_token_to_list(info, current_token, is_first_token ? CMD : (expect_file ? FIL : ARG));
+	add_token_to_list(info, current_token, expect_file ? FIL : (is_first_token ? CMD : ARG));
 	free(current_token);
 	current_token = NULL;
 
